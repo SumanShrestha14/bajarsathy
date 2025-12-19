@@ -15,9 +15,9 @@ class PriceController extends Controller
         $validated = $request->validate([
             'product_name' => 'required|string',
             'unit'         => 'nullable|string',
-            'min_price'    => 'nullable|numeric',
-            'max_price'    => 'nullable|numeric',
-            'avg_price'    => 'nullable|numeric',
+            'min_price'    => 'nullable|string',
+            'max_price'    => 'nullable|string',
+            'avg_price'    => 'nullable|string',
         ]);
 
         $price = PriceModel::create($validated);

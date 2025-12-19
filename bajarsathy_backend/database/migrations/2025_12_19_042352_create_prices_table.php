@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('product_name');            // Name of the crop
             $table->string('unit')->nullable();        // e.g., के.जी., दर्जन, प्रति गोटा
-            $table->decimal('min_price', 10, 2)->nullable(); // न्यूनतम
-            $table->decimal('max_price', 10, 2)->nullable(); // अधिकतम
-            $table->decimal('avg_price', 10, 2)->nullable(); // औसत
+            $table->string('min_price')->nullable(); // न्यूनतम
+            $table->string('max_price')->nullable(); // अधिकतम
+            $table->string('avg_price')->nullable(); // औसत
             $table->timestamps();
         });
     }
