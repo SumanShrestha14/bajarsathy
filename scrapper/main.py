@@ -1,5 +1,11 @@
+import sys
 import requests
 from bs4 import BeautifulSoup
+
+sys.stdout.reconfigure(encoding='utf-8')
+
+API_URL = "http://127.0.0.1:8000/api/prices"
+
 
 def scrape_kalimati():
     url = "https://kalimatimarket.gov.np/price"
@@ -25,7 +31,7 @@ def scrape_kalimati():
         cols = row.find_all("td")
         if len(cols) >= 5:
             market_data.append({
-                "name": cols[0].get_text(strip=True),
+                "product_name": cols[0].get_text(strip=True),
                 "unit": cols[1].get_text(strip=True),
                 "min_price": cols[2].get_text(strip=True),
                 "max_price": cols[3].get_text(strip=True),
@@ -34,9 +40,24 @@ def scrape_kalimati():
 
     return market_data
 
+def send_to_laravel(data):
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-API-KEY": "kalimati_secret_123"
+    }
+
+    response = requests.post(API_URL, json=data, headers=headers)
+
+    if response.status_code in [200, 201]:
+        print(f"Stored: {data['product_name']}")
+    else:
+        print(f"Failed to store {data['product_name']}", response.text)
+
 
 # Run it
 prices = scrape_kalimati()
 length = len(prices)
 for p in prices[:length]:
-    print(f"{p['name']}: Rs. {p['avg_price']}")
+    print(f"{p['product_name']}: Rs. {p['avg_price']}:: Rs. {p['avg_price']}:: Rs. {p['max_price']}:: Rs. {p['min_price']}")
+    send_to_laravel(p)
