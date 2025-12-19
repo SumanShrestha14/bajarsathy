@@ -43,7 +43,8 @@ def scrape_kalimati():
 def send_to_laravel(data):
     headers = {
         "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-API-KEY": "kalimati_secret_123"
     }
 
     response = requests.post(API_URL, json=data, headers=headers)
