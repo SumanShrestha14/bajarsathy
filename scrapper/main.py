@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-API_URL = "http://127.0.0.1:8000/api/prices"
+API_URL = "https://sumanshrestha14.com.np/api/prices"
 
 
 def scrape_kalimati():

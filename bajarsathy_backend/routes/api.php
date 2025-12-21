@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PriceController;
 
 Route::middleware('api.key')->group(function () {
-    Route::get('/prices', [PriceController::class, 'index']);
-    Route::post('/prices', [PriceController::class, 'store']);
+    Route::post('/prices', action: [PriceController::class, 'store']);
+        Route::get('/prices/{date}', [PriceController::class, 'index']);
+
 });
