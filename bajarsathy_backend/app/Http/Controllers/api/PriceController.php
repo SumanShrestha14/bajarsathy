@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PriceModel;
 use Illuminate\Http\Request;
+use App\Models\Price;
+use Carbon\Carbon;
 
 class PriceController extends Controller
 {
@@ -28,12 +30,22 @@ class PriceController extends Controller
     }
 
     // Optional: List all prices
-    public function index()
-    {
-        $prices = PriceModel::all();
+public function index($date)
+{
+    // Validate date format
+    if (!Carbon::hasFormat($date, 'Y-m-d')) {
         return response()->json([
-            'status' => 'success',
-            'data'   => $prices
-        ]);
+            'status'  => 'error',
+            'message' => 'Invalid date format. Use Y-m-d'
+        ], 422);
     }
+
+    $prices = PriceModel::whereDate('created_at', $date)->get();
+
+    return response()->json([
+        'status' => 'success',
+        'date'   => $date,
+        'data'   => $prices
+    ]);
+}
 }
