@@ -1,3 +1,4 @@
+import 'package:bajarsathy_frontend/core/constants/api_constants.dart';
 import 'package:bajarsathy_frontend/features/feature1/data/models/price_model.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -17,19 +18,25 @@ class PriceDataSourceImplemention implements PriceDataSource {
   Future<List<PriceModel>> getPrices() async {
     // get today date yyyy-mm-dd format
     final today = DateTime.now();
-    final year = today.year;
-    final month = today.month;
-    final day = today.day;
-    final date = '$year-$month-$day';
+    final date =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final baseUrl = ApiConstants.baseUrl;
+    final apiKey = ApiConstants.apiKey;
+
+    if (baseUrl.isEmpty || apiKey.isEmpty) {
+      throw Exception(
+        'API configuration is missing. Please check your .env file.',
+      );
+    }
+
     try {
       final response = await client
           .get(
-            Uri.parse('https://sumanshrestha14.com.np/api/prices'),
-
+            Uri.parse('$baseUrl/api/prices/$date'),
             headers: {
               "Accept": "application/json",
               "Content-Type": "application/json",
-              "X-API-KEY": "kalimati_secret_123",
+              "X-API-KEY": apiKey,
             },
           )
           .timeout(
