@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bajar Sathy',
-      home: const PricePage(),
+      home: const Dashboard(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

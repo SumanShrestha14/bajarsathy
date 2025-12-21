@@ -32,7 +32,7 @@ class PriceDataSourceImplemention implements PriceDataSource {
     try {
       final response = await client
           .get(
-            Uri.parse('$baseUrl/api/prices/$date'),
+            Uri.parse('$baseUrl/api/prices/2025-12-19'),
             headers: {
               "Accept": "application/json",
               "Content-Type": "application/json",
