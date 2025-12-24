@@ -35,5 +35,5 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetSinglePrice(sl()));
   // Bloc
   sl.registerFactory(() => PriceBloc(sl()));
-  sl.registerLazySingleton(() => SinglePriceBloc(sl()));
+  sl.registerFactory(() => SinglePriceBloc(sl()));
 }
