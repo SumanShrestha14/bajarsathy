@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:bajarsathy_frontend/features/feature1/presentation/bloc/price_bloc.dart';
 import 'package:bajarsathy_frontend/features/feature1/presentation/bloc/price_event.dart';
 import 'package:bajarsathy_frontend/features/feature1/presentation/bloc/price_state.dart';
-import 'package:bajarsathy_frontend/features/feature1/presentation/pages/single_product_details.dart';
+import 'package:bajarsathy_frontend/features/feature1/presentation/pages/vegetable_details_page.dart';
 import 'package:bajarsathy_frontend/features/feature1/presentation/widgets/price_list_item.dart';
 import 'package:bajarsathy_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class VegetablePricesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.grey,
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
