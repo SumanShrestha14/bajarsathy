@@ -17,5 +17,6 @@ class PriceModel extends Model
         'min_price',
         'max_price',
         'avg_price',
+         'product_image'
     ];
 }
