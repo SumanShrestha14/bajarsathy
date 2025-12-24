@@ -11,6 +11,12 @@ API_KEY = "kalimati_secret_123"
 def clean_price(price):
     """Remove non-digit characters and convert to number string"""
     return ''.join(filter(lambda x: x.isdigit(), price)) or "0"
+API_KEY = "kalimati_secret_123"
+
+
+def clean_price(price):
+    """Remove non-digit characters and convert to number string"""
+    return ''.join(filter(lambda x: x.isdigit(), price)) or "0"
 
 
 def scrape_kalimati():
@@ -35,8 +41,14 @@ def scrape_kalimati():
         cols = row.find_all("td")
         if len(cols) >= 5:
             product = {
+            product = {
                 "product_name": cols[0].get_text(strip=True),
                 "unit": cols[1].get_text(strip=True),
+                "min_price": clean_price(cols[2].get_text(strip=True)),
+                "max_price": clean_price(cols[3].get_text(strip=True)),
+                "avg_price": clean_price(cols[4].get_text(strip=True)),
+            }
+            market_data.append(product)
                 "min_price": clean_price(cols[2].get_text(strip=True)),
                 "max_price": clean_price(cols[3].get_text(strip=True)),
                 "avg_price": clean_price(cols[4].get_text(strip=True)),
@@ -47,9 +59,12 @@ def scrape_kalimati():
 
 
 def send_to_laravel(products):
+
+def send_to_laravel(products):
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "X-API-KEY": API_KEY
         "X-API-KEY": API_KEY
     }
 
@@ -57,14 +72,25 @@ def send_to_laravel(products):
     payload = {"products": products}
 
     response = requests.post(API_URL, json=payload, headers=headers)
+    # Wrap all products in "products" array
+    payload = {"products": products}
 
+    response = requests.post(API_URL, json=payload, headers=headers)
+
+    if response.status_code == 201:
+        print(f"Successfully stored {len(products)} products")
     if response.status_code == 201:
         print(f"Successfully stored {len(products)} products")
     else:
         print(f"Failed to store products: {response.status_code}")
         print(response.text)
+        print(f"Failed to store products: {response.status_code}")
+        print(response.text)
 
 
+# -----------------------------
+# Run the script
+# -----------------------------
 # -----------------------------
 # Run the script
 # -----------------------------
