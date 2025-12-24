@@ -5,6 +5,12 @@ from bs4 import BeautifulSoup
 sys.stdout.reconfigure(encoding='utf-8')
 
 API_URL = "https://sumanshrestha14.com.np/api/prices"
+API_KEY = "kalimati_secret_123"
+
+
+def clean_price(price):
+    """Remove non-digit characters and convert to number string"""
+    return ''.join(filter(lambda x: x.isdigit(), price)) or "0"
 
 
 def scrape_kalimati():
@@ -12,13 +18,11 @@ def scrape_kalimati():
     headers = {"User-Agent": "Mozilla/5.0"}
 
     response = requests.get(url, headers=headers, timeout=10)
-
     if response.status_code != 200:
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return []
 
     soup = BeautifulSoup(response.text, "html.parser")
-
     table = soup.find("table")
     if not table:
         print("Price table not found on page")
@@ -30,34 +34,48 @@ def scrape_kalimati():
     for row in rows[1:]:
         cols = row.find_all("td")
         if len(cols) >= 5:
-            market_data.append({
+            product = {
                 "product_name": cols[0].get_text(strip=True),
                 "unit": cols[1].get_text(strip=True),
-                "min_price": cols[2].get_text(strip=True),
-                "max_price": cols[3].get_text(strip=True),
-                "avg_price": cols[4].get_text(strip=True),
-            })
+                "min_price": clean_price(cols[2].get_text(strip=True)),
+                "max_price": clean_price(cols[3].get_text(strip=True)),
+                "avg_price": clean_price(cols[4].get_text(strip=True)),
+            }
+            market_data.append(product)
 
     return market_data
 
-def send_to_laravel(data):
+
+def send_to_laravel(products):
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "X-API-KEY": "kalimati_secret_123"
+        "X-API-KEY": API_KEY
     }
 
-    response = requests.post(API_URL, json=data, headers=headers)
+    # Wrap all products in "products" array
+    payload = {"products": products}
 
-    if response.status_code in [200, 201]:
-        print(f"Stored: {data['product_name']}")
+    response = requests.post(API_URL, json=payload, headers=headers)
+
+    if response.status_code == 201:
+        print(f"Successfully stored {len(products)} products")
     else:
-        print(f"Failed to store {data['product_name']}", response.text)
+        print(f"Failed to store products: {response.status_code}")
+        print(response.text)
 
 
-# Run it
+# -----------------------------
+# Run the script
+# -----------------------------
 prices = scrape_kalimati()
-length = len(prices)
-for p in prices[:length]:
-    print(f"{p['product_name']}: Rs. {p['avg_price']}:: Rs. {p['avg_price']}:: Rs. {p['max_price']}:: Rs. {p['min_price']}")
-    send_to_laravel(p)
+
+if not prices:
+    print("No data scraped.")
+else:
+    # Optional: Print prices
+    for p in prices:
+        print(f"{p['product_name']}: Rs. {p['avg_price']} (min: {p['min_price']}, max: {p['max_price']})")
+
+    # Send all products to Laravel API at once
+    send_to_laravel(prices)
